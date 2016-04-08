@@ -6,7 +6,7 @@ History
 .. to_doc
 
 ---------------------
-16.4.1.dev0
+16.4.1 (2016-04-08)
 ---------------------
 
 * Update against the latest development branch of Galaxy.
