@@ -1,6 +1,5 @@
 from abc import ABCMeta
 from abc import abstractmethod
-
 import os.path
 
 from ...metrics import formatting

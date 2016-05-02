@@ -1,16 +1,16 @@
+import logging
 import os
 import shutil
-
-from ..instrumenters import InstrumentPlugin
-from ...metrics import formatting
-from ..collectl import subsystems
-from ..collectl import cli
-from ..collectl import processes
 
 from galaxy import util
 from galaxy.util import directory_hash
 
-import logging
+from ..collectl import cli
+from ..collectl import processes
+from ..collectl import subsystems
+from ..instrumenters import InstrumentPlugin
+from ...metrics import formatting
+
 log = logging.getLogger( __name__ )
 
 # By default, only grab statistics for user processes (as identified by
