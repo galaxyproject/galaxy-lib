@@ -168,7 +168,7 @@ def mull_targets(
     }
     repo = string.Template(repository_template).safe_substitute(repo_template_kwds)
 
-    if not rebuild or "push" in command:
+    if not rebuild or "push" in command or "all" in command:
         repo_name = repo_template_kwds["image"].split(":", 1)[0]
         repo_data = quay_repository(repo_template_kwds["namespace"], repo_name)
         if not rebuild:
@@ -182,7 +182,7 @@ def mull_targets(
 
             if tags and (target_tag is None or target_tag in tags):
                 raise BuildExistsException()
-        if "push" in command and "error_type" in repo_data and oauth_token:
+        if ("push" in command or "all" in command) and "error_type" in repo_data and oauth_token:
             # Explicitly create the repository so it can be built as public.
             create_repository(repo_template_kwds["namespace"], repo_name, oauth_token)
 
@@ -209,12 +209,13 @@ def mull_targets(
         involucro_args.extend(["-set", "CONDA_IMAGE='%s'" % CONDA_IMAGE])
     if verbose:
         involucro_args.extend(["-set", "VERBOSE='1'"])
-    if singularity:
-        singularity_image_name = repo_template_kwds['image']
-        involucro_args.extend(["-set", "SINGULARITY='1'"])
-        involucro_args.extend(["-set", "SINGULARITY_IMAGE_NAME='%s'" % singularity_image_name])
-        involucro_args.extend(["-set", "SINGULARITY_IMAGE_DIR='%s'" % singularity_image_dir])
-        involucro_args.extend(["-set", "USER_ID='%s:%s'" % (os.getuid(), os.getgid())])
+
+    singularity_image_name = repo_template_kwds['image']
+    involucro_args.extend(["-set", "SINGULARITY='1'"])
+    involucro_args.extend(["-set", "SINGULARITY_IMAGE_NAME='%s'" % singularity_image_name])
+    involucro_args.extend(["-set", "SINGULARITY_IMAGE_DIR='%s'" % singularity_image_dir])
+    involucro_args.extend(["-set", "USER_ID='%s:%s'" % (os.getuid(), os.getgid())])
+
     if conda_version is not None:
         verbose = "--verbose" if verbose else "--quiet"
         involucro_args.extend(["-set", "PREINSTALL='conda install %s --yes conda=%s'" % (verbose, conda_version)])
@@ -315,8 +316,6 @@ def add_build_arguments(parser):
                         help='Just print commands instead of executing them.')
     parser.add_argument('--verbose', dest='verbose', action="store_true",
                         help='Cause process to be verbose.')
-    parser.add_argument('--singularity', action="store_true",
-                        help='Additionally build a singularity image.')
     parser.add_argument('--singularity-image-dir', dest="singularity_image_dir",
                         help="Directory to write singularity images too.")
     parser.add_argument('-n', '--namespace', dest='namespace', default="biocontainers",
@@ -388,6 +387,8 @@ def args_to_mull_targets_kwds(args):
         kwds["conda_version"] = args.conda_version
     if hasattr(args, "oauth_token"):
         kwds["oauth_token"] = args.oauth_token
+    if kwds["oauth_token"] is None and 'OAUTH_TOKEN' in os.environ:
+        kwds["oauth_token"] = os.environ.get('OAUTH_TOKEN')
     if hasattr(args, "rebuild"):
         kwds["rebuild"] = args.rebuild
     if hasattr(args, "hash"):
