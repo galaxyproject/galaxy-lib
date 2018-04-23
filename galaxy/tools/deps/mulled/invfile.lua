@@ -99,15 +99,12 @@ inv.task('build')
         .as(repo)
     .runTask('cleanup')
 
-
-if VAR.SINGULARITY ~= '' then
-    inv.task('singularity')
-        .using(singularity_image)
-        .withHostConfig({binds = {"build:/data", singularity_image_dir .. ":/import", "/var/run/docker.sock:/var/run/docker.sock"}, privileged = true})
-        .withConfig({entrypoint = {'/bin/sh', '-c'}})
-        .run('singularity build /import/' .. VAR.SINGULARITY_IMAGE_NAME .. ' docker://' .. repo)
-        .run('chown ' .. VAR.USER_ID .. ' /import/' .. VAR.SINGULARITY_IMAGE_NAME)
-end
+inv.task('singularity')
+    .using(singularity_image)
+    .withHostConfig({binds = {"build:/data", singularity_image_dir .. ":/import", "/var/run/docker.sock:/var/run/docker.sock"}, privileged = true})
+    .withConfig({entrypoint = {'/bin/sh', '-c'}})
+    .run('singularity build /import/' .. VAR.SINGULARITY_IMAGE_NAME .. ' docker://' .. repo)
+    .run('chown ' .. VAR.USER_ID .. ' /import/' .. VAR.SINGULARITY_IMAGE_NAME)
 
 inv.task('cleanup')
     .using(conda_image)
@@ -131,6 +128,7 @@ end
 inv.task('push')
     .push(repo)
 
+
 inv.task('build-and-test')
     .runTask('build')
     .runTask('cleanup')
@@ -138,6 +136,8 @@ inv.task('build-and-test')
 
 inv.task('build-singularity')
     .runTask('singularity')
+
+
 
 inv.task('all')
     .runTask('build')
