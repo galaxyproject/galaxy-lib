@@ -48,7 +48,7 @@ end
 
 local singularity_image = VAR.SINGULARITY_IMAGE
 if singularity_image == '' then
-    singularity_image = 'quay.io/biocontainers/singularity:2.3--0'
+    singularity_image = 'quay.io/biocontainers/singularity:2.4.6--0'
 end
 
 local singularity_image_dir = VAR.SINGULARITY_IMAGE_DIR
@@ -97,16 +97,15 @@ inv.task('build')
         .at('/usr/local')
         .inImage(destination_base_image)
         .as(repo)
+    .runTask('cleanup')
+
 
 if VAR.SINGULARITY ~= '' then
     inv.task('singularity')
         .using(singularity_image)
-        .withHostConfig({binds = {"build:/data",singularity_image_dir .. ":/import"}, privileged = true})
+        .withHostConfig({binds = {"build:/data", singularity_image_dir .. ":/import", "/var/run/docker.sock:/var/run/docker.sock"}, privileged = true})
         .withConfig({entrypoint = {'/bin/sh', '-c'}})
-        -- for small containers (less than 7MB), double the size otherwise, add a little bit more as half the conda size
-        .run("size=$(du -sc  /data/dist/ | tail -n 1 | cut -f 1 | awk '{print int($1/1024)}' ) && if [ $size -lt '10' ]; then echo 20; else  echo $(($size+$size*7/10)); fi")
-        .run("singularity create --size `size=$(du -sc /data/dist/ | tail -n 1 | cut -f 1 | awk '{print int($1/1024)}' ) && if [ $size -lt '10' ]; then echo 20; else  echo $(($size+$size*7/10)); fi` /import/" .. VAR.SINGULARITY_IMAGE_NAME)
-        .run('mkdir -p /usr/local/var/singularity/mnt/container && singularity bootstrap /import/' .. VAR.SINGULARITY_IMAGE_NAME .. ' /import/Singularity')
+        .run('singularity build /import/' .. VAR.SINGULARITY_IMAGE_NAME .. ' docker://' .. repo)
         .run('chown ' .. VAR.USER_ID .. ' /import/' .. VAR.SINGULARITY_IMAGE_NAME)
 end
 
@@ -134,14 +133,15 @@ inv.task('push')
 
 inv.task('build-and-test')
     .runTask('build')
-    .runTask('singularity')
     .runTask('cleanup')
     .runTask('test')
 
+inv.task('build-singularity')
+    .runTask('singularity')
 
 inv.task('all')
     .runTask('build')
-    .runTask('singularity')
     .runTask('cleanup')
     .runTask('test')
     .runTask('push')
+    .runTask('singularity')
