@@ -16,6 +16,7 @@ import shutil
 import string
 import subprocess
 import sys
+from distutils.spawn import find_executable
 from sys import platform as _platform
 
 from six.moves import shlex_quote
@@ -285,7 +286,9 @@ class InvolucroContext(installable.InstallableContext):
         return res
 
     def is_installed(self):
-        return os.path.exists(self.involucro_bin)
+        if find_executable('involucro') is not None or os.path.exists(self.involucro_bin):
+            return True
+        return False
 
     def can_install(self):
         return True
