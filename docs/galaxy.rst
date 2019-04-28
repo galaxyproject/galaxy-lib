@@ -6,6 +6,7 @@ Subpackages
 
 .. toctree::
 
+    galaxy.containers
     galaxy.exceptions
     galaxy.jobs
     galaxy.objectstore

@@ -1,5 +1,5 @@
-galaxy\.jobs package
-====================
+galaxy.jobs package
+===================
 
 Subpackages
 -----------
