@@ -1,5 +1,5 @@
-galaxy\.tools\.verify package
-=============================
+galaxy.tools.verify package
+===========================
 
 Subpackages
 -----------
@@ -11,8 +11,24 @@ Subpackages
 Submodules
 ----------
 
-galaxy\.tools\.verify\.test\_data module
-----------------------------------------
+galaxy.tools.verify.interactor module
+-------------------------------------
+
+.. automodule:: galaxy.tools.verify.interactor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+galaxy.tools.verify.script module
+---------------------------------
+
+.. automodule:: galaxy.tools.verify.script
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+galaxy.tools.verify.test\_data module
+-------------------------------------
 
 .. automodule:: galaxy.tools.verify.test_data
     :members:

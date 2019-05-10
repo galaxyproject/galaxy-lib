@@ -1,5 +1,5 @@
-galaxy\.web package
-===================
+galaxy.web package
+==================
 
 Module contents
 ---------------

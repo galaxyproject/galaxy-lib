@@ -76,7 +76,7 @@ flake8:
 	$(IN_VENV) flake8 --max-complexity 15 $(SOURCE_DIR)  $(TEST_DIR)
 
 lint:
-	$(IN_VENV) tox -e py27-lint && tox -e py34-lint
+	$(IN_VENV) tox -e py27-lint && tox -e py37-lint
 
 lint-readme:
 	$(IN_VENV) python setup.py check -r -s

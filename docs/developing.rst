@@ -18,11 +18,12 @@ are fine.
         test
     
     [pypi]
+    repository: https://upload.pypi.org/legacy/
     username:<username>
     password:<password>
     
     [test]
-    repository:https://testpypi.python.org/pypi
+    repository: https://test.pypi.org/legacy/
     username:<username>
     password:<password>
 
