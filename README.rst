@@ -9,6 +9,9 @@
 .. image:: https://travis-ci.org/galaxyproject/galaxy-lib.png?branch=master
    :target: https://travis-ci.org/galaxyproject/galaxy-lib
 
+THIS LIBRARY IS DEPRECATED, PLEASE USE `galaxy-tool-util <https://pypi.org/project/galaxy-tool-util/>`_ INSTEAD!
+----------------------------------------------------------------------------------------------------------------
+
 Overview
 --------
 
